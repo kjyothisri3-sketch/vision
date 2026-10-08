@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI VisionMate — See the World. Understand Everything.</title>
+  <meta name="description" content="AI VisionMate is an AI-powered visual assistant concept for smart glasses. Browser prototype with live camera vision and clearly labelled Demo Mode.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <a class="skip-link" href="#live">Skip to Live Demo</a>
+
+  <!-- ============ NAVIGATION ============ -->
+  <header class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="VisionMate home">
+        <span class="brand-mark"><i data-lucide="eye"></i></span>
+        <span>VisionMate</span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#live">Live Demo</a>
+        <a href="#how">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#technology">Technology</a>
+        <a href="#prototype">Prototype</a>
+        <a href="#future">Future Scope</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#live" class="btn btn-primary btn-sm btn-try-demo"><i data-lucide="play"></i> Try Demo</a>
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 1. HOME / HERO ============ -->
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> Prototype · Hackathon build</span>
+          <h1 class="hero-title">AI <span class="gradient-text">VISIONMATE</span></h1>
+          <p class="tagline">“See the World. Understand Everything.”</p>
+          <p class="lead">An intelligent visual assistant that uses AI and computer vision to understand the world around you and provide real-time assistance.</p>
+          <div class="cta-row">
+            <a href="#live" class="btn btn-primary"><i data-lucide="scan"></i> Try VisionMate</a>
+            <a href="#how" class="btn btn-ghost"><i data-lucide="workflow"></i> Explore How It Works</a>
+          </div>
+          <ul class="hero-stats">
+            <li><strong>5</strong><span>stage pipeline</span></li>
+            <li><strong>3</strong><span>confidence bands</span></li>
+            <li><strong>0</strong><span>installs required</span></li>
+          </ul>
+        </div>
+
+        <div class="hero-visual">
+          <div class="glasses-stage" aria-label="Animated smart glasses scanning the room">
+            <div class="grid-floor" aria-hidden="true"></div>
+            <div class="glasses-holo" data-glasses="hero"></div>
+            <div class="scan-beam" aria-hidden="true"></div>
+            <div class="float-label fl-1"><span class="dot-live"></span> Person — 96%</div>
+            <div class="float-label fl-2"><span class="dot-live"></span> Chair — 92%</div>
+            <div class="float-label fl-3"><span class="dot-live"></span> Door — 94%</div>
+            <p class="stage-caption"><i data-lucide="info"></i> Illustrative visual. Real results appear in Live AI Vision.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2–3. LIVE VISION DEMO + AI DETECTION PANEL ============ -->
+    <section id="live" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Core demo</span>
+          <h2>LIVE AI VISION</h2>
+          <p>Start the camera to see the detection pipeline run. Results come from a live in-browser model when it loads, or from a clearly labelled DEMO MODE when it does not.</p>
+        </header>
+
+        <div class="live-grid">
+          <!-- Camera panel -->
+          <div class="glass panel camera-panel reveal">
+            <div class="camera-frame" id="cameraFrame" data-camera="off" data-active="false">
+              <video id="video" autoplay playsinline muted aria-label="Live camera preview"></video>
+
+              <div class="camera-placeholder" id="cameraPlaceholder">
+                <div class="ph-icon"><i data-lucide="camera-off"></i></div>
+                <p id="placeholderText">Camera is off. Press Start Camera to begin.</p>
+              </div>
+
+              <div class="overlay" id="overlay" aria-live="off"></div>
+              <div class="scan-sweep" aria-hidden="true"></div>
+              <span class="corner tl" aria-hidden="true"></span>
+              <span class="corner tr" aria-hidden="true"></span>
+              <span class="corner bl" aria-hidden="true"></span>
+              <span class="corner br" aria-hidden="true"></span>
+
+              <div class="mode-badge" id="modeBadge" data-mode="idle">STANDBY</div>
+
+              <div class="rain-banner" data-rain-banner hidden role="alert">
+                <i data-lucide="cloud-rain"></i>
+                <div>
+                  <strong>⚠️ Heavy rain detected</strong>
+                  <span>Camera visibility may be reduced. AI results may be less reliable.</span>
+                </div>
+              </div>
+
+              <div class="loading-overlay" id="loadingOverlay" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p id="loadingText">Loading…</p>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button id="startBtn" class="btn btn-primary"><i data-lucide="camera"></i> Start Camera</button>
+              <button id="stopBtn" class="btn btn-ghost" disabled><i data-lucide="square"></i> Stop Camera</button>
+              <button id="demoOnlyBtn" class="btn btn-ghost"><i data-lucide="sparkles"></i> Demo Mode (no camera)</button>
+              <button id="voiceAssistBtn" class="btn btn-ghost" data-voice="assist" data-voice-assist aria-pressed="false">
+                <i data-lucide="volume-x"></i> Voice Assistance: OFF
+              </button>
+            </div>
+
+            <div class="status-row">
+              <div class="status-chip" id="systemStatus" data-tone="idle" role="status">
+                <span class="dot" aria-hidden="true"></span>
+                <span id="systemStatusText">AI SYSTEM STANDBY</span>
+              </div>
+              <div class="status-chip">
+                <i data-lucide="camera"></i>
+                <span id="cameraStatusText">Camera: off</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" data-rain-toggle aria-describedby="rainLabelLive">
+                <span class="toggle-ui" aria-hidden="true"></span>
+                <span id="rainLabelLive" data-rain-status>Rain / low-visibility mode: OFF</span>
+              </label>
+            </div>
+
+            <p class="notice" id="liveNotice" data-tone="info" role="status" aria-live="polite">
+              Press Start Camera to grant camera access, or use Demo Mode without a camera.
+            </p>
+          </div>
+
+          <!-- AI detection panel -->
+          <aside class="glass panel detect-panel reveal" aria-labelledby="detectTitle">
+            <div class="panel-head">
+              <h3 id="detectTitle">AI Detection Panel</h3>
+              <span class="mini" id="detectCount">0 objects</span>
+            </div>
+            <p class="mini sub">Detected Objects · confidence</p>
+
+            <ul class="detect-list" id="detectList" aria-live="polite"></ul>
+
+            <div class="ai-response">
+              <div class="label-row"><i data-lucide="sparkles"></i> AI Response</div>
+              <p class="response-text" id="aiResponse" aria-live="polite">“Waiting for input…”</p>
+              <div class="voice-row">
+                <button class="btn btn-sm btn-primary" data-voice="enable"><i data-lucide="volume-2"></i> Enable Voice</button>
+                <button class="btn btn-sm btn-ghost" data-voice="disable" disabled><i data-lucide="volume-x"></i> Disable Voice</button>
+                <button class="btn btn-sm btn-accent" data-voice="speak"><i data-lucide="volume-2"></i> Speak Result</button>
+              </div>
+              <p class="mini" data-voice-status aria-live="polite"></p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="demo-legend reveal">
+          <span class="band-pill high">High 90–100%</span>
+          <span class="band-pill medium">Medium 60–89%</span>
+          <span class="band-pill low">Low &lt; 60%</span>
+          <span class="mini">· Boxes and bars are colour-coded by confidence.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. VOICE ASSISTANCE ============ -->
+    <section id="voice" class="section">
+      <div class="container split">
+        <div class="reveal">
+          <span class="eyebrow">Voice output</span>
+          <h2>Voice Assistance</h2>
+          <p class="lead-sm">Results are read aloud with the browser's built-in SpeechSynthesis API. No cloud text-to-speech, no extra accounts. Voice is off until you turn it on.</p>
+          <div class="voice-row big">
+            <button class="btn btn-primary" data-voice="enable"><i data-lucide="volume-2"></i> Enable Voice</button>
+            <button class="btn btn-ghost" data-voice="disable" disabled><i data-lucide="volume-x"></i> Disable Voice</button>
+            <button class="btn btn-accent" data-voice="speak"><i data-lucide="volume-2"></i> Speak Result</button>
+          </div>
+          <p class="mini" data-voice-status aria-live="polite">Voice is off.</p>
+        </div>
+
+        <div class="glass panel voice-card reveal">
+          <div class="wave" data-wave aria-hidden="true"></div>
+          <p class="label-row"><i data-lucide="scan-eye"></i> AI detects</p>
+          <blockquote class="voice-quote">“Chair detected ahead.”</blockquote>
+          <button class="btn btn-accent" data-speak-text="Chair detected ahead."><i data-lucide="volume-2"></i> Speak Result</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. HOW IT WORKS ============ -->
+    <section id="how" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Pipeline</span>
+          <h2>How It Works</h2>
+          <p>Five stages turn raw camera frames into a spoken, understandable answer.</p>
+        </header>
+
+        <div class="flow-strip reveal" aria-label="Camera to AI to Detection to Understanding to Assistance">
+          <span class="chip">Camera</span><i data-lucide="chevron-right"></i>
+          <span class="chip">AI</span><i data-lucide="chevron-right"></i>
+          <span class="chip">Detection</span><i data-lucide="chevron-right"></i>
+          <span class="chip">Understanding</span><i data-lucide="chevron-right"></i>
+          <span class="chip">Assistance</span>
+        </div>
+
+        <ol class="steps">
+          <li class="glass step reveal"><span class="step-num">01</span><h3>Capture</h3><p>Camera captures the surroundings.</p></li>
+          <li class="glass step reveal"><span class="step-num">02</span><h3>Analyze</h3><p>AI processes the visual information.</p></li>
+          <li class="glass step reveal"><span class="step-num">03</span><h3>Detect</h3><p>Objects and text are identified.</p></li>
+          <li class="glass step reveal"><span class="step-num">04</span><h3>Understand</h3><p>The system interprets the scene.</p></li>
+          <li class="glass step reveal"><span class="step-num">05</span><h3>Assist</h3><p>The information is provided through text or voice.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ 6. FEATURES ============ -->
+    <section id="features" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Capabilities</span>
+          <h2>Built for Real-World Assistance</h2>
+          <p>Six capabilities that make the glasses useful, and honest about how sure they are.</p>
+        </header>
+
+        <div class="features-grid">
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="scan-eye"></i></div>
+            <h3>Object Detection</h3>
+            <p>Identifies objects around the user.</p>
+          </article>
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="file-text"></i></div>
+            <h3>Text Recognition</h3>
+            <p>Reads visible text using OCR.</p>
+          </article>
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="volume-2"></i></div>
+            <h3>Voice Assistance</h3>
+            <p>Converts results into speech.</p>
+          </article>
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="target"></i></div>
+            <h3>Confidence Score</h3>
+            <p>Shows how confident the AI is.</p>
+          </article>
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="cloud-rain"></i></div>
+            <h3>Rain Detection</h3>
+            <p>Warns when weather conditions affect visibility.</p>
+          </article>
+          <article class="glass feature-card tilt reveal">
+            <div class="feature-icon"><i data-lucide="zap"></i></div>
+            <h3>Real-Time Assistance</h3>
+            <p>Provides fast visual feedback.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 7. AI CONFIDENCE & SAFETY ============ -->
+    <section id="safety" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Responsible AI</span>
+          <h2>“AI That Knows When It Isn't Sure.”</h2>
+          <p>AI systems can sometimes make incorrect predictions. VisionMate communicates confidence levels and warns the user when a prediction may be uncertain.</p>
+        </header>
+
+        <div class="conf-grid">
+          <div class="glass conf-card high reveal">
+            <span class="conf-dot" aria-hidden="true"></span>
+            <h3>High Confidence</h3>
+            <p class="conf-range">90–100%</p>
+            <p>Announced as a direct statement, e.g. “Person detected ahead.”</p>
+          </div>
+          <div class="glass conf-card medium reveal">
+            <span class="conf-dot" aria-hidden="true"></span>
+            <h3>Medium Confidence</h3>
+            <p class="conf-range">60–89%</p>
+            <p>Flagged as “medium confidence” so the user knows to stay alert.</p>
+          </div>
+          <div class="glass conf-card low reveal">
+            <span class="conf-dot" aria-hidden="true"></span>
+            <h3>Low Confidence</h3>
+            <p class="conf-range">Below 60%</p>
+            <p>Phrased as a possibility with a warning to verify manually.</p>
+          </div>
+        </div>
+
+        <blockquote class="principle glass reveal">
+          <i data-lucide="shield-check"></i>
+          <p>“VisionMate assists human decision-making. It does not replace human judgment.”</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ============ 8. RAIN PROTECTION ============ -->
+    <section id="rain" class="section">
+      <div class="container split">
+        <div class="rain-stage reveal" data-rain-visual>
+          <div class="rain-drops" data-rain-drops aria-hidden="true"></div>
+          <div class="glasses-holo" data-glasses="rain"></div>
+        </div>
+
+        <div class="reveal">
+          <span class="eyebrow">Environment</span>
+          <h2>Rain Protection</h2>
+          <p class="lead-sm">A design concept for wearing VisionMate outdoors. It shows how the hardware and software would react to poor visibility.</p>
+          <ul class="check-list">
+            <li><i data-lucide="droplets"></i> Water-resistant casing</li>
+            <li><i data-lucide="shield"></i> Protective camera cover</li>
+            <li><i data-lucide="sparkles"></i> Hydrophobic lens coating</li>
+            <li><i data-lucide="lock"></i> Sealed electronics</li>
+            <li><i data-lucide="alert-triangle"></i> Visibility warning</li>
+          </ul>
+
+          <label class="toggle big">
+            <input type="checkbox" data-rain-toggle>
+            <span class="toggle-ui" aria-hidden="true"></span>
+            <span>Simulate rain / poor visibility</span>
+          </label>
+
+          <div class="rain-warning" data-rain-banner hidden role="alert">
+            <i data-lucide="cloud-rain"></i>
+            <div>
+              <strong>⚠️ Heavy rain detected</strong>
+              <p>“Camera visibility may be reduced. AI results may be less reliable.”</p>
+            </div>
+          </div>
+
+          <p class="disclaimer"><i data-lucide="info"></i> Prototype concept only. The hardware features are design intent, not tested or certified. No waterproofing rating is claimed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 9. TECHNOLOGY ============ -->
+    <section id="technology" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Stack</span>
+          <h2>Technology</h2>
+          <p>The building blocks behind the prototype, from browser APIs to wearable hardware.</p>
+        </header>
+        <div class="tech-map reveal" id="techMap" aria-label="Technology map"></div>
+      </div>
+    </section>
+
+    <!-- ============ 10. SYSTEM ARCHITECTURE ============ -->
+    <section id="architecture" class="section">
+      <div class="container arch-wrap">
+        <div class="reveal">
+          <header class="section-head left">
+            <span class="eyebrow">Architecture</span>
+            <h2>System Architecture</h2>
+            <p>Each frame flows through the same pipeline. The highlight shows the stage currently processing.</p>
+          </header>
+          <div class="arch-stack">
+            <div class="arch-step glass" data-step="0"><i data-lucide="camera"></i><span>Camera</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="1"><i data-lucide="sliders-horizontal"></i><span>Image Processing</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="2"><i data-lucide="brain"></i><span>AI / Computer Vision</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="3"><i data-lucide="target"></i><span>Object + Text Detection</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="4"><i data-lucide="gauge"></i><span>Confidence Analysis</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="5"><i data-lucide="volume-2"></i><span>Voice / Text Output</span></div>
+            <div class="arch-arrow"></div>
+            <div class="arch-step glass" data-step="6"><i data-lucide="user"></i><span>User</span></div>
+          </div>
+        </div>
+
+        <div class="glass panel arch-detail reveal">
+          <h3>What each stage does</h3>
+          <ol>
+            <li data-step="0"><strong>Camera</strong> Frames captured via getUserMedia (browser) or the glasses' sensor.</li>
+            <li data-step="1"><strong>Image Processing</strong> Resize, normalise and prepare frames for inference.</li>
+            <li data-step="2"><strong>AI / Computer Vision</strong> A vision model scores what it sees (COCO-SSD in Live mode).</li>
+            <li data-step="3"><strong>Object + Text Detection</strong> Bounding boxes and labels; OCR is on the roadmap.</li>
+            <li data-step="4"><strong>Confidence Analysis</strong> Results are banded High / Medium / Low.</li>
+            <li data-step="5"><strong>Voice / Text Output</strong> A short sentence via SpeechSynthesis and on-screen text.</li>
+            <li data-step="6"><strong>User</strong> Decides, with the AI as an assistant rather than an authority.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 11. PROTOTYPE ============ -->
+    <section id="prototype" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Hardware concept</span>
+          <h2>Our Prototype</h2>
+          <p>The prototype demonstrates how a camera-equipped wearable can capture visual information and use AI to provide meaningful assistance.</p>
+        </header>
+
+        <div class="proto-visual glass reveal">
+          <div class="proto-glow" aria-hidden="true"></div>
+          <div class="glasses-holo" data-glasses="proto"></div>
+        </div>
+
+        <div class="spec-grid">
+          <div class="glass spec reveal"><i data-lucide="camera"></i><h3>Camera</h3><p>Captures the scene in front of the wearer.</p></div>
+          <div class="glass spec reveal"><i data-lucide="cpu"></i><h3>Processing Unit</h3><p>Runs detection and confidence analysis.</p></div>
+          <div class="glass spec reveal"><i data-lucide="headphones"></i><h3>Voice Output</h3><p>Speaks short, plain-language results.</p></div>
+          <div class="glass spec reveal"><i data-lucide="wifi"></i><h3>AI Connection</h3><p>Links to the model; works in Demo Mode offline.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 12. FUTURE SCOPE ============ -->
+    <section id="future" class="section">
+      <div class="container">
+        <header class="section-head reveal">
+          <span class="eyebrow">Roadmap</span>
+          <h2>Future Scope</h2>
+          <p>Where VisionMate goes after the hackathon. None of these are implemented in this prototype.</p>
+        </header>
+        <div class="future-grid">
+          <div class="glass future-item reveal"><i data-lucide="navigation"></i><h3>GPS Navigation Assistance</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="languages"></i><h3>Multilingual Voice Support</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="moon"></i><h3>Better Low-Light Detection</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="server-off"></i><h3>Offline AI Processing</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="layers"></i><h3>Advanced Scene Understanding</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="siren"></i><h3>Emergency Assistance</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="glasses"></i><h3>Improved Wearable Hardware</h3><span class="tag">Planned</span></div>
+          <div class="glass future-item reveal"><i data-lucide="hand"></i><h3>Additional Accessibility Features</h3><span class="tag">Planned</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 13. FINAL CTA ============ -->
+    <section id="cta" class="section final">
+      <div class="final-glow" data-glasses="cta" aria-hidden="true"></div>
+      <div class="container final-inner reveal">
+        <span class="eyebrow">Get started</span>
+        <h2>“Give AI a Pair of Eyes.”</h2>
+        <p class="lead">Turning visual information into meaningful assistance.</p>
+        <div class="cta-row center">
+          <a href="#live" class="btn btn-primary btn-lg"><i data-lucide="scan"></i> Try VisionMate</a>
+          <a href="#prototype" class="btn btn-ghost btn-lg"><i data-lucide="glasses"></i> View Prototype</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="brand"><span class="brand-mark"><i data-lucide="eye"></i></span><span>VisionMate</span></div>
+      <p class="mini">Hackathon prototype · Browser demo · Not a medical, navigation, or safety device. Always rely on your own judgment.</p>
+    </div>
+  </footer>
+
+  <!-- Icons (Lucide). If the CDN is unreachable, the page still works without icons. -->
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/detector.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
